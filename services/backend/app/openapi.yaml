@@ -1,0 +1,161 @@
+openapi: 3.0.3
+info:
+  title: AML Investigation API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+paths:
+  /transactions:
+    post:
+      summary: Ingest a transaction (alternative to Kafka ingestion for testing)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transaction'
+      responses:
+        '201':
+          description: Transaction accepted
+  /alerts:
+    get:
+      summary: List alerts with optional filters
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+        - in: query
+          name: min_score
+          schema:
+            type: number
+      responses:
+        '200':
+          description: array of alerts
+    post:
+      summary: Create an alert (used by rule engine)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Alert'
+      responses:
+        '201':
+          description: Alert created
+  /alerts/{alert_id}:
+    get:
+      summary: Get alert detail (includes transactions, graph snippet, case)
+      parameters:
+        - in: path
+          name: alert_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: alert detail
+  /cases:
+    post:
+      summary: Create or link a case to an alert
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Case'
+      responses:
+        '201':
+          description: Case created
+  /cases/{case_id}/comments:
+    post:
+      summary: Add investigator comment
+      parameters:
+        - in: path
+          name: case_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                author:
+                  type: string
+                comment:
+                  type: string
+      responses:
+        '201':
+          description: Comment added
+components:
+  schemas:
+    Transaction:
+      type: object
+      required: [transaction_id, from_account, to_account, amount, currency, timestamp]
+      properties:
+        transaction_id:
+          type: string
+        from_account:
+          type: string
+        to_account:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+          additionalProperties: true
+    Alert:
+      type: object
+      required: [alert_id, triggered_by, severity, timestamp]
+      properties:
+        alert_id:
+          type: string
+        triggered_by:
+          type: string
+        rules:
+          type: array
+          items:
+            type: string
+        model_score:
+          type: number
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transaction'
+        severity:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    Case:
+      type: object
+      required: [case_id, alert_id, status]
+      properties:
+        case_id:
+          type: string
+        alert_id:
+          type: string
+        assignee:
+          type: string
+        status:
+          type: string
+        notes:
+          type: array
+          items:
+            type: object
+            properties:
+              author:
+                type: string
+              text:
+                type: string
+              timestamp:
+                type: string
+                format: date-time
