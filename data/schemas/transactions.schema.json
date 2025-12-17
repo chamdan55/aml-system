@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/aml/transaction.schema.json",
+  "title": "Transaction",
+  "description": "Banking transaction event for AML monitoring",
+  "type": "object",
+  "required": [
+    "transaction_id",
+    "from_account",
+    "to_account",
+    "amount",
+    "currency",
+    "timestamp"
+  ],
+  "properties": {
+    "transaction_id": {
+      "type": "string",
+      "description": "Unique transaction identifier (UUID)"
+    },
+    "from_account": {
+      "type": "string",
+      "description": "Source account ID"
+    },
+    "to_account": {
+      "type": "string",
+      "description": "Destination account ID"
+    },
+    "amount": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Transaction amount"
+    },
+    "currency": {
+      "type": "string",
+      "example": "IDR"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional transaction context",
+      "properties": {
+        "channel": {
+          "type": "string",
+          "example": "mobile"
+        },
+        "country": {
+          "type": "string",
+          "example": "ID"
+        },
+        "pattern": {
+          "type": "string",
+          "description": "Synthetic AML pattern label (normal, fan_out, layering)"
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

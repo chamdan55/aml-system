@@ -1,8 +1,6 @@
-# services/ingestion/schemas.py
-from pydantic import BaseModel
-from typing import Dict, Optional
+from pydantic import BaseModel, Field
 from datetime import datetime
-
+from typing import Dict, Optional
 
 class Transaction(BaseModel):
     transaction_id: str
@@ -11,6 +9,8 @@ class Transaction(BaseModel):
     amount: float
     currency: str = "IDR"
     timestamp: datetime
+
     channel: str
     country: str
-    metadata: Optional[Dict] = {}
+
+    metadata: Optional[Dict] = Field(default_factory=dict)

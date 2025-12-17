@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>AML Producer Control</title>
+  <style>
+    body { font-family: sans-serif; padding: 24px; }
+    button { margin-right: 8px; padding: 8px 12px; }
+    .running { color: green; }
+    .stopped { color: red; }
+  </style>
+</head>
+<body>
+  <h2>Kafka Producer Control</h2>
+
+  <button onclick="start()">Generate</button>
+  <button onclick="stop()">Stop Generate</button>
+
+  <p id="status">Status: unknown</p>
+  <p id="sent">Sent: 0</p>
+
+  <script src="./app.js"></script>
+</body>
+</html>

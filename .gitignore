@@ -1,1 +1,3 @@
 guide/
+**/__pycache__/
+**/*.pyc

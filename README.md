@@ -40,3 +40,16 @@ Prereqs: Docker & Docker Compose
 - Deploy to Kubernetes
 - Add federated learning across banks
 - Integrate real KYC document parsing
+
+## Transaction Data Contract
+
+All transactions follow a strict JSON schema (`data/schemas/transaction.schema.json`).
+
+Sample datasets are provided:
+- CSV: `data/samples/transactions_sample.csv`
+- Parquet: `data/samples/transactions_sample.parquet`
+
+These datasets are used for:
+- SQL & dbt testing
+- Analytics & BI
+- ML feature engineering

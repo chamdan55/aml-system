@@ -1,0 +1,4 @@
+transaction_id,from_account,to_account,amount,currency,timestamp,channel,country,pattern
+tx_0001,acc_001,acc_002,50000,IDR,2025-01-14 01:00:00,mobile,ID,normal
+tx_0002,acc_001,acc_003,75000,IDR,2025-01-14 01:01:10,mobile,ID,fan_out
+tx_0003,acc_010,acc_020,9500000,IDR,2025-01-14 02:15:45,branch,ID,high_value

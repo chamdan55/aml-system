@@ -3,7 +3,7 @@ import random
 import uuid
 from datetime import datetime, timedelta
 from typing import List
-from schemas import Transaction
+from common.schemas.transaction import Transaction
 
 
 CHANNELS = ["mobile", "web", "atm"]
