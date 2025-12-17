@@ -18,3 +18,10 @@ CREATE TABLE IF NOT EXISTS transactions_staging (
 CREATE INDEX IF NOT EXISTS idx_tx_ts ON transactions_staging (ts);
 CREATE INDEX IF NOT EXISTS idx_tx_from_ts ON transactions_staging (from_account, ts);
 CREATE INDEX IF NOT EXISTS idx_tx_to_ts ON transactions_staging (to_account, ts);
+
+CREATE TABLE IF NOT EXISTS etl_checkpoints (
+  pipeline_name TEXT NOT NULL,
+  object_key    TEXT NOT NULL,
+  processed_at  TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (pipeline_name, object_key)
+);

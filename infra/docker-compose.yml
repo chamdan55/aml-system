@@ -244,17 +244,17 @@ services:
     networks:
       - aml-net
 
-  consumer-raw-to-staging:
+  etl-raw-to-staging:
     build:
       context: ..
       dockerfile: services/ingestion/Dockerfile
-    container_name: consumer-raw-to-staging
+    container_name: etl-raw-to-staging
     depends_on:
       postgres-init:
         condition: service_completed_successfully
       minio:
         condition: service_healthy
-    command: python services/ingestion/consumer_raw_to_staging.py
+    command: python services/ingestion/etl_raw_to_staging.py
     environment:
       DATABASE_URL: postgres://aml:amlpass@postgres:5432/aml_db
       MINIO_ENDPOINT: minio:9000
