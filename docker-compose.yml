@@ -96,7 +96,7 @@ services:
       KAFKA_TOPICS: transactions:3:1
     command: ["bash", "/init-topics.sh"]
     volumes:
-      - ./init-topics.sh:/init-topics.sh:ro
+      - ./infra/init-topics.sh:/init-topics.sh:ro
     networks:
       - aml-net
 
@@ -129,7 +129,7 @@ services:
     environment:
       PGPASSWORD: amlpass
     volumes:
-      - ./init-postgres.sql:/init/init-postgres.sql:ro
+      - ./infra/init-postgres.sql:/init/init-postgres.sql:ro
     command: >
       bash -c "\
       until pg_isready -h postgres -U aml -d aml_db; do echo 'waiting for postgres...'; sleep 2; done; \
@@ -195,8 +195,8 @@ services:
 
   backend:
     build:
-      context: ..
-      dockerfile: services/backend/Dockerfile
+      context: ./services/backend
+      dockerfile: Dockerfile
     container_name: aml_backend
     restart: unless-stopped
     depends_on:
@@ -224,13 +224,13 @@ services:
     networks:
       - aml-net
     volumes:
-      - ../services/backend:/app/services/backend
-      - ../services/common:/app/services/common:ro
+      - ./services/backend:/app/services/backend
+      - ./services/common:/app/services/common:ro
 
   consumer-to-minio:
     build:
-      context: ..
-      dockerfile: services/ingestion/Dockerfile
+      context: ./services/ingestion
+      dockerfile: Dockerfile
     container_name: consumer-to-minio
     depends_on:
       kafka:
@@ -239,15 +239,15 @@ services:
         condition: service_healthy
     command: python services/ingestion/consumer_to_minio.py
     volumes:
-      - ../services/ingestion:/app/services/ingestion
-      - ../services/common:/app/services/common:ro
+      - ./services/ingestion:/app/services/ingestion
+      - ./services/common:/app/services/common:ro
     networks:
       - aml-net
 
   etl-raw-to-staging:
     build:
-      context: ..
-      dockerfile: services/ingestion/Dockerfile
+      context: ./services/ingestion
+      dockerfile: Dockerfile
     container_name: etl-raw-to-staging
     depends_on:
       postgres-init:
@@ -261,26 +261,26 @@ services:
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin
     volumes:
-      - ../services/ingestion:/app/services/ingestion
-      - ../services/common:/app/services/common:ro
+      - ./services/ingestion:/app/services/ingestion
+      - ./services/common:/app/services/common:ro
     networks:
       - aml-net
 
 
-  # frontend:
-  #   build:
-  #     context: ../frontend
-  #     dockerfile: Dockerfile
-  #   container_name: aml_frontend
-  #   restart: unless-stopped
-  #   depends_on:
-  #     - backend
-  #   ports:
-  #     - '3000:3000'
-  #   environment:
-  #     REACT_APP_API_URL: http://localhost:8000
-  #   networks:
-  #     - aml-net
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: aml_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - '3000:80'
+    environment:
+      REACT_APP_API_URL: http://localhost:8000
+    networks:
+      - aml-net
 
   mlflow:
     image: ghcr.io/mlflow/mlflow:v2.9.2
