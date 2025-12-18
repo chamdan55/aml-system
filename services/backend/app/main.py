@@ -46,8 +46,8 @@ def produce(count: int = 1):
 
 # API
 @app.post("/api/producer/start")
-def start(rate: int = 5):
-    started = producer_service.start(rate)
+def start(rate: int = 5, pattern: str = "normal"):
+    started = producer_service.start(rate, pattern)
     return {"status": "started" if started else "already_running", "rate": rate}
 
 @app.post("/api/producer/stop")

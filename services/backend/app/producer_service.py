@@ -30,12 +30,11 @@ class ProducerService:
         self._running = False
         self._thread = None
         self._sent = 0
-        self._current_pattern = "normal"
     
-    def _run(self, rate: int):
+    def _run(self, rate: int, pattern: str):
         interval = 1 / rate
+        print(f"ProducerService started with pattern: {pattern} at rate: {rate} tx/sec")
         while self._running:
-            pattern = self._current_pattern
             for tx in PATTERNS[pattern].generate():
                 producer.send(KAFKA_TOPIC_TRANSACTIONS, value=tx.dict())
                 self._sent += 1
@@ -46,10 +45,9 @@ class ProducerService:
     def start(self, rate: int = 5, pattern: str = "normal"):
         if self._running:
             return False
-        self._current_pattern = pattern
         self._running = True
         self._thread = threading.Thread(
-            target=self._run, args=(rate,), daemon=True
+            target=self._run, args=(rate, pattern,), daemon=True
         )
         self._thread.start()
         return True
