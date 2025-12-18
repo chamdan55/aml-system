@@ -195,8 +195,8 @@ services:
 
   backend:
     build:
-      context: ./services/backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: services/backend/Dockerfile
     container_name: aml_backend
     restart: unless-stopped
     depends_on:
@@ -229,8 +229,8 @@ services:
 
   consumer-to-minio:
     build:
-      context: ./services/ingestion
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: services/ingestion/Dockerfile
     container_name: consumer-to-minio
     depends_on:
       kafka:
@@ -246,8 +246,8 @@ services:
 
   etl-raw-to-staging:
     build:
-      context: ./services/ingestion
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: services/ingestion/Dockerfile
     container_name: etl-raw-to-staging
     depends_on:
       postgres-init:
@@ -281,6 +281,8 @@ services:
       REACT_APP_API_URL: http://localhost:8000
     networks:
       - aml-net
+    volumes:
+      - ./frontend:/app/frontend:ro
 
   mlflow:
     image: ghcr.io/mlflow/mlflow:v2.9.2

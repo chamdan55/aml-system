@@ -39,9 +39,10 @@ export default function ControlPanel() {
   return (
     <div className="panel">
       <h2>AML Generator Control</h2>
+      <p className="subtle">Trigger synthetic transactions to test detection.</p>
 
-      <label>
-        Rate (tx/sec):
+      <label className="field">
+        <span>Rate (tx/sec)</span>
         <input
           type="number"
           value={rate}
@@ -50,8 +51,8 @@ export default function ControlPanel() {
         />
       </label>
 
-      <label>
-        Pattern:
+      <label className="field">
+        <span>Pattern</span>
         <select value={pattern} onChange={(e) => setPattern(e.target.value)}>
           {PATTERNS.map((p) => (
             <option key={p.value} value={p.value}>
@@ -62,16 +63,33 @@ export default function ControlPanel() {
       </label>
 
       <div className="buttons">
-        <button onClick={onStart} disabled={running}>
+        <button className="btn primary" onClick={onStart} disabled={running}>
           Generate
         </button>
-        <button onClick={onStop} disabled={!running}>
+        <button className="btn danger" onClick={onStop} disabled={!running}>
           Stop
         </button>
       </div>
 
-      <p>Status: <b>{running ? "RUNNING" : "STOPPED"}</b></p>
-      <p>Sent: {sent}</p>
+      <div className="status-row">
+        <span className={`status-badge ${running ? "running" : "stopped"}`}>
+          <span className="pulse" />
+          {running ? "Running" : "Stopped"}
+        </span>
+      </div>
+
+      <div className="stats">
+        <div className="stat">
+          <div className="stat-label">Sent</div>
+          <div className="stat-value">{sent}</div>
+        </div>
+        <div className="stat">
+          <div className="stat-label">Pattern</div>
+          <div className="stat-value">
+            {PATTERNS.find((p) => p.value === pattern)?.label}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
